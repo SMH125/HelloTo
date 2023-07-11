@@ -1,0 +1,219 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the differential equation and its analytical solution
+def f(t, y):
+    return t * y + t**3
+
+def y_analytical(t):
+    return np.exp(t**2/2 - 1/2) 
+
+# Define the time interval and step size
+t0, tf = 0, 2
+h = 0.1
+def Final_ALL(f,y_analytical,t0,tf,y0,h):
+# Initialize arrays to store the errors of each method
+euler_error = []
+heun_error = []
+rk4_error = []
+
+# Define the initial condition
+y0 = y_analytical(t0)
+
+# Define the Euler's method
+def euler(f, t, y, h):
+    return y + h * f(t, y)
+
+# Define the Heun's method
+def heun(f, t, y, h):
+    k1 = f(t, y)
+    k2 = f(t + h, y + h * k1)
+    return y + h/2 * (k1 + k2)
+
+# Define the RK4 method
+def rk4(f, t, y, h):
+    k1 = f(t, y)
+    k2 = f(t + h/2, y + h/2 * k1)
+    k3 = f(t + h/2, y + h/2 * k2)
+    k4 = f(t + h, y + h * k3)
+    return y + h/6 * (k1 + 2*k2 + 2*k3 + k4)
+
+# Perform the iterations for each method and calculate the errors
+t = t0
+y_euler = y0
+y_heun = y0
+y_rk4 = y0
+
+while t < tf:
+    # Calculate the errors for each method
+    euler_error.append(abs(y_analytical(t) - y_euler))
+    heun_error.append(abs(y_analytical(t) - y_heun))
+    rk4_error.append(abs(y_analytical(t) - y_rk4))
+    
+    # Update the values of y for each method
+    y_euler = euler(f, t, y_euler, h)
+    y_heun = heun(f, t, y_heun, h)
+    y_rk4 = rk4(f, t, y_rk4, h)
+    
+    # Update the value of t
+    t += h
+
+# Plot the errors for each method
+t_values = np.arange(t0, tf, h)
+plt.plot(t_values, euler_error, label="Euler's method")
+plt.plot(t_values, heun_error, label="Heun's method")
+
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Define the ODE and its analytical solution
+def ode_func(y, t):
+    return -2*y + 4*t
+
+def true_sol(t):
+    return 2*t + 0.5*np.exp(-2*t)
+
+# Define the time range and step size
+t_start = 0
+t_end = 2
+h_vals = [0.1, 0.05, 0.025]
+
+# Initialize arrays to store errors for each method and step size
+heun_err = np.zeros(len(h_vals))
+euler_err = np.zeros(len(h_vals))
+rk4_err = np.zeros(len(h_vals))
+
+# Iterate over each step size and method, calculate the numerical solution and the error
+for i in range(len(h_vals)):
+    h = h_vals[i]
+    n = int((t_end - t_start) / h) + 1
+    t = np.linspace(t_start, t_end, n)
+    
+    # Heun's method
+    y = np.zeros(n)
+    y[0] = 0.5
+    for j in range(n-1):
+        k1 = ode_func(y[j], t[j])
+        k2 = ode_func(y[j] + h*k1, t[j+1])
+        y[j+1] = y[j] + 0.5*h*(k1 + k2)
+    heun_err[i] = np.max(np.abs(y - true_sol(t)))
+    
+    # Euler's method
+    y = np.zeros(n)
+    y[0] = 0.5
+    for j in range(n-1):
+        y[j+1] = y[j] + h*ode_func(y[j], t[j])
+    euler_err[i] = np.max(np.abs(y - true_sol(t)))
+    
+    # 4th order Runge-Kutta method
+    y = np.zeros(n)
+    y[0] = 0.5
+    for j in range(n-1):
+        k1 = ode_func(y[j], t[j])
+        k2 = ode_func(y[j] + 0.5*h*k1, t[j] + 0.5*h)
+        k3 = ode_func(y[j] + 0.5*h*k2, t[j] + 0.5*h)
+        k4 = ode_func(y[j] + h*k3, t[j+1])
+        y[j+1] = y[j] + (h/6)*(k1 + 2*k2 + 2*k3 + k4)
+    rk4_err[i] = np.max(np.abs(y - true_sol(t)))
+
+# Plot the errors for each method and step size
+plt.loglog(h_vals, heun_err, 'o-', label='Heun')
+plt.loglog(h_vals, euler_err, 'o-', label='Euler')
+plt.loglog(h_vals, rk4_err, 'o-', label='RK4')
+plt.xlabel('Step size (h)')
+plt.ylabel('Maximum error')
+plt.legend()
+plt.show()
+
+
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def Final_ALL(f,y_analytical,t0,tf,y0,h):
+# Initialize arrays to store the errors of each method
+  euler_error = []
+  heun_error = []
+  rk4_error = []
+
+# Define the initial condition
+  y0 = y_analytical(t0)
+
+# Define the Euler's method
+  def euler(f, t, y, h):
+      return y + h * f(t, y)
+
+# Define the Heun's method
+  def heun(f, t, y, h):
+      k1 = f(t, y)
+      k2 = f(t + h, y + h * k1)
+      return y + h/2 * (k1 + k2)
+
+# Define the RK4 method
+  def rk4(f, t, y, h):
+      k1 = f(t, y)
+      k2 = f(t + h/2, y + h/2 * k1)
+      k3 = f(t + h/2, y + h/2 * k2)
+      k4 = f(t + h, y + h * k3)
+      return y + h/6 * (k1 + 2*k2 + 2*k3 + k4)
+
+# Perform the iterations for each method and calculate the errors
+  t = t0
+  y_euler = y0
+  y_heun = y0
+  y_rk4 = y0
+
+  while t < tf:
+    # Calculate the errors for each method
+      euler_error.append(abs(y_analytical(t) - y_euler))
+      heun_error.append(abs(y_analytical(t) - y_heun))
+      rk4_error.append(abs(y_analytical(t) - y_rk4))
+    
+    # Update the values of y for each method
+      y_euler = euler(f, t, y_euler, h)
+      y_heun = heun(f, t, y_heun, h)
+      y_rk4 = rk4(f, t, y_rk4, h)
+    
+    # Update the value of t
+      t += h
+
+# Plot the errors for each method
+  t_values = np.arange(t0, tf, h)
+  plt.plot(t_values, euler_error, label="Euler's method")
+  plt.plot(t_values, heun_error, label="Heun's method")
+  plt.plot(t_values, rk4_error, label="RK4 method")
+  plt.legend()
+  plt.xlabel('t')
+  plt.ylabel('Absolute Error')
+  plt.show()
+
+
+def f(t, y):
+    return t * y + t**3
+
+def y_analytical(t):
+    return np.exp(t**2/2 - 1/2) 
+t0, tf = 0, 2
+h = 0.1
+y0 = y_analytical(t0)
+Final_ALL(f,y_analytical,t0,tf,y0,h)
+
+
+
+
+
+
+
+
+
+
+plt.plot(t_values, rk4_error, label="RK4 method")
+plt.legend()
+plt.xlabel('t')
+plt.ylabel('Absolute Error')
+plt.show()
